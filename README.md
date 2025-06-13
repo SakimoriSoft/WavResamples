@@ -84,7 +84,7 @@
 3.  「変換後のファイルの保存先フォルダを選択してください」というダイアログが表示されます。変換されたファイルを保存するフォルダを選択し、「フォルダーの選択」をクリックします。
 
     <p align="center">
-      <img src="images/save_dialog.png" alt="保存先選択ダイアログ">
+      <img src="images/save_dialog.png" alt="保存先選択ダイアログ"><br>
       *(例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)*
     </p>
 
@@ -123,7 +123,11 @@
     <p align="center">
       <img src="images/delete_selected.png" alt="選択消去">
     </p>
-    *(ここにリストアイテムを選択し、「選択消去」ボタンが有効になっている状態のスクリーンショットを挿入してください。上記はサンプルパスです。)*
+    *(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)*
+    <p align="center">
+      <img src="images/delete_selected_after.png" alt="選択消去">
+    </p>
+    *(例：sample_003.wavがリストから消去された後)*
 
 ### 6. アプリケーションの終了
 
