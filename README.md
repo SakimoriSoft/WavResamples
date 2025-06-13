@@ -51,7 +51,7 @@
 2.  メインウィンドウが表示されます。
 
     <p align="center">
-      <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="65%">
+      <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%">
     </p>
 
 ### 2. ファイルの追加
@@ -62,6 +62,7 @@
 
     <p align="center">
       <img src="images/file_add.gif" alt="ファイル追加GIF">
+      <img src="images/file_add.png" alt="ファイル追加png" width="70%">
     </p>
 
 ### 3. 目標サンプリング周波数の設定
@@ -70,9 +71,11 @@
 2.  入力欄の右隣にあるドロップダウンリストから、入力した数値の単位（`Hz` または `kHz`）を選択します。
 
     <p align="center">
-      <img src="images/sr_setting.png" alt="サンプリング周波数設定">
+      <div style="display: flex;">
+        <div><img src="images/sr_setting.png" alt="サンプリング周波数設定"></div>
+        <div><img src="images/sr_setting.png" alt="サンプリング周波数設定"></div>
+      </div>
     </p>
-    *(ここに目標サンプリング周波数と単位を設定している部分のスクリーンショットを挿入してください。上記はサンプルパスです。)*
 
 ### 4. 変換モードの選択と実行
 
