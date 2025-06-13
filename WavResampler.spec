@@ -5,7 +5,7 @@ a = Analysis(
     ['WavResamplesGui.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('images', 'images')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['app_icon.ico'],
 )
