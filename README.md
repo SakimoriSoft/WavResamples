@@ -108,7 +108,6 @@
     <p align="center">
       <img src="images/auto_resampling.png" alt="自動変換中">
     </p>
-    *(ここに自動変換モードでファイルが追加され、処理されている途中のスクリーンショットを挿入してください。上記はサンプルパスです。)*
 
     *   **注意**: 自動変換モード中でも、目標サンプリング周波数の設定はいつでも変更可能です。ただし、既にキューに入っているファイルは、キューイングされた時点のサンプリング周波数設定で処理されます。
 
@@ -121,12 +120,12 @@
     3.  選択されたアイテムがリストから削除されます。
 
     <p align="center">
-      <img src="images/delete_selected.png" alt="選択消去">
-      **(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)**
+      <img src="images/delete_selected.png" alt="選択消去"><br>
+      **(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)**<br>
     </p>
     <p align="center">
-      <img src="images/delete_selected_after.png" alt="選択消去">
-      **(例：sample_003.wavがリストから消去された後)**
+      <img src="images/delete_selected_after.png" alt="選択消去"><br>
+      **(例：sample_003.wavがリストから消去された後)**<br>
     </p>
 
 ### 6. アプリケーションの終了
