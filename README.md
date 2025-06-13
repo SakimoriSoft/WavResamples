@@ -122,12 +122,12 @@
 
     <p align="center">
       <img src="images/delete_selected.png" alt="選択消去">
+      **(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)**
     </p>
-    *(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)*
     <p align="center">
       <img src="images/delete_selected_after.png" alt="選択消去">
+      **(例：sample_003.wavがリストから消去された後)**
     </p>
-    *(例：sample_003.wavがリストから消去された後)*
 
 ### 6. アプリケーションの終了
 
