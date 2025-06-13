@@ -5,7 +5,6 @@
 <p align="center">
   <img src="images/tool_screenshot.png" alt="ツールのスクリーンショット">
 </p>
-*(ここにツールの全体的なスクリーンショットを挿入してください。上記はサンプルパスです。)*
 
 ## 主な機能
 
