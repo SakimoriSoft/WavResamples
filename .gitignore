@@ -1,5 +1,3 @@
 .env
 build
 dist
-*.mp4
-*.spec
