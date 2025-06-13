@@ -71,10 +71,8 @@
 2.  入力欄の右隣にあるドロップダウンリストから、入力した数値の単位（`Hz` または `kHz`）を選択します。
 
     <p align="center">
-      <div style="display: flex;">
-        <div><img src="images/sr_setting.png" alt="サンプリング周波数設定"></div>
-        <div><img src="images/sr_setting.png" alt="サンプリング周波数設定"></div>
-      </div>
+      <img src="images/sr_setting_hz.png" alt="サンプリング周波数設定">
+      <img src="images/sr_setting_khz.png" alt="サンプリング周波数設定">
     </p>
 
 ### 4. 変換モードの選択と実行
