@@ -135,7 +135,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
     <p align="center">
       <img src="images/save_dialog.png" alt="保存先選択ダイアログ"><br>
-      *(例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)*
+      (例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)
     </p>
 
 4.  変換処理が開始されます。各ファイルの処理状況はリストの「状態」列とウィンドウ下部のステータスバーに表示されます。
@@ -144,7 +144,10 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
     <p align="center">
       <img src="images/batch_complete.png" alt="一括変換完了">
     </p>
-    *(ここに一括変換が完了し、リストの状態が更新されたスクリーンショットを挿入してください。上記はサンプルパスです。)*
+    <p align="center">
+      <img src="images/auto_resampling.png" alt="一括変換完了後リスト">
+    </p>
+
 #### 4.2. 自動変換モード
 
 1.  「自動で変更する」チェックボックスを **オン** にします。
@@ -178,8 +181,6 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 5.  選択されたファイルの変換処理が開始されます。各ファイルの処理状況はリストの「状態」列とウィンドウ下部のステータスバーに表示されます。
 6.  処理が完了すると、リストの「状態」が更新され、場合によってはメッセージボックスで結果が通知されます。
 
-    *(ここに個別変換の操作や結果を示すスクリーンショットを挿入できると理想的です。)*
-
     <p align="center">
       <!-- (例：個別変換ボタンを押す前のファイル選択状態のスクリーンショットなど) -->
       <img src="images/individual_conversion_selection.png" alt="個別変換のファイル選択"><br>
@@ -202,11 +203,11 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
     <p align="center">
       <img src="images/delete_selected.png" alt="選択消去"><br>
-      **(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)**<br>
+      (例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)<br>
     </p>
     <p align="center">
       <img src="images/delete_selected_after.png" alt="選択消去"><br>
-      **(例：sample_003.wavがリストから消去された後)**<br>
+      (例：sample_003.wavがリストから消去された後)<br>
     </p>
 
 ---
