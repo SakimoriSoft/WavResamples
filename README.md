@@ -7,6 +7,11 @@
 このツールは、複数のWAVファイルのサンプリング周波数を一括で、または自動で変更することができるデスクトップアプリケーションです。Windowsユーザー向けには実行ファイル (`.exe`) を、Python環境をお持ちのユーザー向けにはPythonスクリプト (`.py`) を提供します。
 
 <p align="center">
+  <img src="images/tool_icon.png" alt="ツールのスクリーンショット" width="25%"><br>
+  (Winodws用の WavResampler.exe ファイルのアイコン)
+</p>
+
+<p align="center">
   <img src="images/tool_screenshot.png" alt="ツールのスクリーンショット">
 </p>
 
