@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['WavResamplesGui.py'],
+    ['WavResamples.py'],
     pathex=[],
     binaries=[],
     datas=[('images', 'images')],

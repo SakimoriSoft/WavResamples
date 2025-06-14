@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import librosa
-import soundfile as sf # pysomefile は soundfile のことと解釈します
+import soundfile as sf
 import os
 import threading
 import queue
@@ -26,7 +26,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
         self.resample_task_queue = queue.Queue()
         self.resample_results_queue = queue.Queue()
         self.worker_thread = None
-        self.auto_output_dir = None
+        self.auto_output_dir = None # 自動変換モード時の出力先
         self.is_shutting_down = False
 
         self._setup_ui()
@@ -79,8 +79,12 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
         self.unit_combobox.current(0) # "Hz" をデフォルト選択
 
         self.auto_resample_var = tk.BooleanVar(value=False)
-        self.auto_resample_check = ttk.Checkbutton(control_frame, text="自動で変更する", variable=self.auto_resample_var, command=self.toggle_auto_resample_mode)
+        self.auto_resample_check = ttk.Checkbutton(control_frame, text="自動で変更する", variable=self.auto_resample_var, command=self.on_auto_resample_toggle)
         self.auto_resample_check.pack(side=tk.LEFT, padx=10)
+
+        self.save_to_source_var = tk.BooleanVar(value=False)
+        self.save_to_source_check = ttk.Checkbutton(control_frame, text="ソース元に保存", variable=self.save_to_source_var, command=self.on_save_to_source_toggle)
+        self.save_to_source_check.pack(side=tk.LEFT, padx=5)
 
         self.resample_button = ttk.Button(control_frame, text="一括変換実行", command=self.start_resampling_process)
         self.resample_button.pack(side=tk.LEFT, padx=10)
@@ -97,7 +101,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
         self.status_label.pack(side=tk.BOTTOM, fill="x", pady=(5,0))
         self.status_var.set("準備完了。WAVファイルをドラッグ＆ドロップしてください。")
 
-        self.toggle_auto_resample_mode() # Initialize button states based on checkbox
+        self.update_status_and_button_states() # Initialize button states and status message
         self.after(100, self.process_resample_results) # Start polling for results
         self.protocol("WM_DELETE_WINDOW", self.on_closing) # Handle window close
 
@@ -148,30 +152,38 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
                     item_id = self.tree.insert("", tk.END, values=(filename, filepath_abs, original_sr, "")) # 初期状態は空
                     added_count += 1
 
-                    if self.auto_resample_var.get(): # 自動変換モードがONの場合
-                        if not self.auto_output_dir:
-                            messagebox.showinfo("出力先指定", "自動変換用の出力先フォルダを最初に指定してください。")
-                            self.auto_output_dir = filedialog.askdirectory(title="自動変換ファイルの保存先フォルダを選択")
-                            if not self.auto_output_dir:
-                                self.status_var.set("自動変換の出力先が未指定のため、キューに追加できませんでした。")
+                    if self.auto_resample_var.get(): # 自動変換モードがONの場合のみキューイング
+                        output_dir_for_task = None
+                        if self.save_to_source_var.get():
+                            output_dir_for_task = os.path.dirname(filepath_abs)
+                        else: # ソース元に保存しない場合 -> auto_output_dir を使う
+                            if not self.auto_output_dir: # auto_output_dir が必須なのに未設定
+                                self.status_var.set("自動変換エラー: 出力先フォルダが未指定です。")
                                 self.tree.set(item_id, column="status", value="出力先未指定")
+                                if self.auto_resample_var.get(): # まだONなら警告しOFFにする
+                                    messagebox.showerror("自動変換エラー", "自動変換用の出力先フォルダが設定されていません。\n「自動で変更する」をOFFにするか、設定を見直してください。")
+                                    self.auto_resample_var.set(False)
+                                    self.update_status_and_button_states()
                                 continue # このファイルのキューイングをスキップ
-                            else:
-                                self.status_var.set(f"自動変換の出力先: {self.auto_output_dir}")
-                        
-                        try:
-                            target_sr_hz, _ = self._get_target_sr_from_gui() # 現在の目標SRを取得
-                            self.tree.set(item_id, column="status", value="キュー済")
-                            # タスクキューには item_id, filepath_abs, target_sr_hz, output_dir, filename, original_sr を渡す
-                            self.resample_task_queue.put((item_id, filepath_abs, target_sr_hz, self.auto_output_dir, filename, original_sr))
-                            self._ensure_worker_thread_running()
-                        except ValueError as ve: # 目標SR値が無効な場合
-                             self.tree.set(item_id, column="status", value="SR値エラー")
-                             self.status_var.set(f"目標SR値エラーのためキュー追加失敗: {ve}")
+                            output_dir_for_task = self.auto_output_dir
+
+                        if output_dir_for_task: # 出力先が確定した場合のみキューへ
+                            try:
+                                target_sr_hz, _ = self._get_target_sr_from_gui() # 現在の目標SRを取得
+                                self.tree.set(item_id, column="status", value="キュー済")
+                                # タスクキューには item_id, filepath_abs, target_sr_hz, output_dir_for_task, filename, original_sr を渡す
+                                self.resample_task_queue.put((item_id, filepath_abs, target_sr_hz, output_dir_for_task, filename, original_sr))
+                                self.status_var.set(f"キュー追加: {filename}")
+                                self._ensure_worker_thread_running()
+                            except ValueError as ve: # 目標SR値が無効な場合
+                                 self.tree.set(item_id, column="status", value="SR値エラー")
+                                 self.status_var.set(f"目標SR値エラーのためキュー追加失敗: {ve}")
+                        # else の場合、output_dir_for_task が None で、既にエラー処理されているはず
+
                 except Exception as e:
                     self.status_var.set(f"エラー: {filename} の情報取得失敗 - {e}")
                     print(f"Error getting info for {filepath_abs}: {e}")
-            
+
             messages = []
             if added_count > 0:
                 messages.append(f"{added_count} 個のWAVファイルを追加しました。")
@@ -236,56 +248,76 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
             self.status_var.set(str(e))
             return
 
-        output_dir = filedialog.askdirectory(title="変換後のファイルの保存先フォルダを選択してください")
-        if not output_dir:
-            self.status_var.set("保存先フォルダが選択されませんでした。処理を中止します。")
-            return
+        output_dir_for_batch = None
+        if not self.save_to_source_var.get():
+            output_dir_for_batch = filedialog.askdirectory(title="変換後のファイルの保存先フォルダを選択してください")
+            if not output_dir_for_batch:
+                self.status_var.set("保存先フォルダが選択されませんでした。処理を中止します。")
+                # ボタン状態を元に戻す必要はない（この関数内で有効化されるため）
+                return
 
         self.resample_button.config(state=tk.DISABLED)
         self.clear_button.config(state=tk.DISABLED)
         self.delete_button.config(state=tk.DISABLED) # 処理中は消去ボタンも無効化
         self.auto_resample_check.config(state=tk.DISABLED) # 処理中は自動変換チェックも無効化
-        self.status_var.set("変換処理中...")
-        self.update_idletasks() # GUIの更新を強制
+        self.save_to_source_check.config(state=tk.DISABLED) # ソース元保存チェックも無効化
+        # self.status_var.set("変換処理中...") # 個別ファイル処理前に設定するため、ここでは不要
+        # self.update_idletasks() # GUIの更新を強制
 
         processed_count = 0
         error_count = 0
         skipped_count = 0
+        actually_converted_count = 0 # スキップを除いた実際に変換されたファイル数
 
         for item_id in items:
             values = self.tree.item(item_id, "values")
             filename, filepath, original_sr_str, _ = values # 既存のステータスは無視
             original_sr = int(original_sr_str)
 
+            # 処理開始前に「処理中」に更新
+            self.tree.set(item_id, column="status", value="処理中...")
             self.status_var.set(f"処理中: {filename}...")
-            self.update_idletasks()
+            self.update_idletasks() # GUIを即時更新
 
-            # バッチモードでは同期的に処理し、ファイルごとにUIを更新
-            result_status, message = self._perform_single_resample_logic(filepath, original_sr, target_sr, output_dir, filename)
+            current_output_dir = ""
+            if self.save_to_source_var.get():
+                current_output_dir = os.path.dirname(filepath)
+            else:
+                current_output_dir = output_dir_for_batch # この時点でNoneではないはず
+
+            result_status, message = self._perform_single_resample_logic(filepath, original_sr, target_sr, current_output_dir, filename)
+            
+            # 処理完了後に状態を更新
             self.tree.set(item_id, column="status", value=result_status)
+            self.status_var.set(f"{filename}: {result_status} {(' - ' + message) if message and result_status != '処理中...' else ''}") # メッセージがある場合のみ表示
+            self.update_idletasks() # GUIを即時更新
+            
             if result_status == "処理済":
                 processed_count += 1
                 if "スキップ" in message: # スキップされた場合
                     skipped_count +=1
+                else: # スキップされなかった場合（実際に変換された）
+                    actually_converted_count +=1
             elif result_status == "エラー":
                 error_count += 1
-                messagebox.showerror("変換エラー", f"{filename} の変換中にエラーが発生しました:\n{message}")
+                # messagebox.showerror は最後にまとめて表示するため、ここでは表示しない方針も検討可能
 
         self.resample_button.config(state=tk.NORMAL)
         self.clear_button.config(state=tk.NORMAL)
         self.auto_resample_check.config(state=tk.NORMAL) # 自動変換チェックを有効化
+        self.save_to_source_check.config(state=tk.NORMAL) # ソース元保存チェックも有効化
         self.on_tree_select() # 処理完了後、選択状態に応じて消去ボタンの状態を更新
 
-        final_message_parts = [f"{processed_count}個のファイルを処理しました。"]
+        final_message_parts = [f"{actually_converted_count}個のファイルを変換しました。"]
         if skipped_count > 0:
-             final_message_parts.append(f"({skipped_count}個スキップ)")
+             final_message_parts.append(f"{skipped_count}個スキップ。")
         if error_count > 0:
-            final_message = f"処理完了。{processed_count-error_count-skipped_count}個成功、{error_count}個エラー、{skipped_count}個スキップ。"
+            final_message = f"処理完了。{actually_converted_count}個成功、{error_count}個エラー、{skipped_count}個スキップ。"
             messagebox.showwarning("処理完了（一部エラーあり）", final_message)
         else:
-            final_message = f"処理完了。全てのファイル ({processed_count-skipped_count}個) が正常に変換されました。"
+            final_message = f"処理完了。{actually_converted_count}個のファイルが正常に変換されました。"
             if skipped_count > 0:
-                final_message += f" ({skipped_count}個は既に目標周波数だったためスキップ)"
+                final_message += f" ({skipped_count}個は目標周波数と同一のためスキップ)"
             messagebox.showinfo("処理完了", final_message)
         
         self.status_var.set(final_message)
@@ -310,26 +342,72 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
         else:
             self.delete_button.config(state=tk.DISABLED)
 
-    def toggle_auto_resample_mode(self):
-        """自動変換モードのON/OFFを切り替え、関連するUIの状態を更新する。"""
-        if self.auto_resample_var.get():
-            self.resample_button.config(state=tk.DISABLED)
-            self.status_var.set("自動変換モード ON。ファイルドロップで自動処理します。")
+    def on_auto_resample_toggle(self):
+        """「自動で変更する」チェックボックスの状態変更時の処理。"""
+        auto_mode_now = self.auto_resample_var.get()
+        save_to_source = self.save_to_source_var.get()
+
+        if auto_mode_now and not save_to_source: # 自動ON かつ ソース保存OFF の場合
             if not self.auto_output_dir:
-                messagebox.showinfo("出力先指定", "自動変換用の出力先フォルダを最初に指定してください。")
-                self.auto_output_dir = filedialog.askdirectory(title="自動変換ファイルの保存先フォルダを選択")
-                if not self.auto_output_dir:
-                    self.status_var.set("自動変換の出力先が未指定です。ファイル追加時に再度確認します。")
-                    # 自動変換をOFFに戻すか、ユーザーに再度促すかなどの対応も検討可能
-                    # self.auto_resample_var.set(False) # 例: OFFに戻す
-                    # self.toggle_auto_resample_mode() # UI状態を再更新
+                messagebox.showinfo("出力先指定", "自動変換用の出力先フォルダを指定してください。\n「ソース元に保存」がOFFのため、出力先が必要です。")
+                new_dir = filedialog.askdirectory(title="自動変換ファイルの保存先フォルダを選択")
+                if new_dir:
+                    self.auto_output_dir = new_dir
                 else:
-                    self.status_var.set(f"自動変換の出力先: {self.auto_output_dir}")
+                    self.auto_resample_var.set(False) # 指定がなければ自動変換をOFFに戻す
+                    messagebox.showwarning("出力先未指定", "出力先が指定されなかったため、自動変換をOFFにしました。")
+        self.update_status_and_button_states()
+
+    def on_save_to_source_toggle(self):
+        """「ソース元に保存」チェックボックスの状態変更時の処理。"""
+        auto_mode = self.auto_resample_var.get()
+        save_to_source_now = self.save_to_source_var.get()
+
+        if auto_mode and not save_to_source_now: # 自動ON かつ ソース保存OFF になった/なっている場合
+             if not self.auto_output_dir:
+                messagebox.showinfo("出力先指定", "「ソース元に保存」がOFFのため、自動変換用の出力先フォルダを指定してください。")
+                new_dir = filedialog.askdirectory(title="自動変換ファイルの保存先フォルダを選択")
+                if new_dir:
+                    self.auto_output_dir = new_dir
+                else:
+                    self.auto_resample_var.set(False) # ソース保存OFFで出力先も未指定なら自動変換もOFF
+                    messagebox.showwarning("出力先未指定", "出力先が指定されなかったため、自動変換をOFFにしました。")
+        self.update_status_and_button_states()
+
+    def update_status_and_button_states(self):
+        """現在のモード設定に基づいてUI（ボタン状態、ステータスメッセージ）を更新する。"""
+        auto_mode = self.auto_resample_var.get()
+        save_to_source = self.save_to_source_var.get()
+
+        # 処理中でなければボタンの状態を更新
+        # (処理中は start_resampling_process や _worker_resample_files で直接制御)
+        is_processing_manually = self.resample_button['state'] == tk.DISABLED and not auto_mode
+        
+        if not is_processing_manually: # 手動処理中でない場合のみボタン状態を更新
+            if auto_mode:
+                self.resample_button.config(state=tk.DISABLED)
+            else:
+                self.resample_button.config(state=tk.NORMAL)
+
+        # ステータスメッセージの更新ロジック
+        if auto_mode:
+            self.resample_button.config(state=tk.DISABLED)
+            if save_to_source:
+                self.status_var.set("自動変換 ON (ソース元へ保存)。ファイルドロップで自動処理。")
+            else: # 自動ON、ソース保存OFF
+                if not self.auto_output_dir:
+                    self.status_var.set("自動変換 ON (出力先未指定)。設定を確認してください。")
+                else:
+                     self.status_var.set(f"自動変換 ON (出力先: {os.path.basename(self.auto_output_dir) if self.auto_output_dir else '未指定'})。ファイルドロップで自動処理。")
             self._ensure_worker_thread_running()
-        else:
-            self.resample_button.config(state=tk.NORMAL)
-            self.status_var.set("自動変換モード OFF。「一括変換実行」ボタンで処理します。")
-            # ここでキューをクリアしたり、ワーカースレッドに停止を指示するロジックも検討可能
+        else: # 自動変換OFF
+            # 手動処理中でなければステータスを更新
+            if not is_processing_manually:
+                self.resample_button.config(state=tk.NORMAL) # is_processing_manually でなければ NORMAL に戻す
+                if save_to_source:
+                    self.status_var.set("手動変換 (ソース元へ保存)。「一括変換実行」ボタンで処理。")
+                else: # 自動OFF、ソース保存OFF
+                    self.status_var.set("手動変換 (指定フォルダへ保存)。「一括変換実行」ボタンで処理。")
 
     def _ensure_worker_thread_running(self):
         """ワーカースレッドが実行中でなければ起動する。"""
@@ -342,12 +420,13 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
         """ワーカースレッドのメインループ。タスクキューからファイル処理タスクを取得して実行する。"""
         print("ワーカースレッド実行中...")
         while not self.is_shutting_down:
+            item_id = None # エラーハンドリングのために初期化
             try:
                 # タスクキューからアイテムを取得 (item_id, filepath, target_sr, output_dir, filename, original_sr)
                 item_id, filepath, target_sr, output_dir, filename, original_sr = self.resample_task_queue.get(timeout=1)
                 
-                # GUIに「処理中」を通知 (結果キュー経由が望ましいが、簡略化のため直接更新も検討)
-                # self.resample_results_queue.put((item_id, "処理中...", "")) # より良い方法
+                # GUIに「処理中」を通知
+                self.resample_results_queue.put((item_id, "処理中...", None)) # メッセージはNone
 
                 result_status, message = self._perform_single_resample_logic(filepath, original_sr, target_sr, output_dir, filename)
                 self.resample_results_queue.put((item_id, result_status, message))
@@ -356,9 +435,9 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
                 continue # タイムアウト、キューが空ならループを継続
             except Exception as e:
                 print(f"ワーカースレッドで予期せぬエラー: {e}")
-                # item_idが取得できていれば、そのアイテムのエラーとして結果キューに通知することも可能
-                # if 'item_id' in locals(): # Check if item_id was assigned
-                #    self.resample_results_queue.put((item_id, "エラー", str(e)))
+                if item_id: # item_idが取得できていればエラーを通知
+                   self.resample_results_queue.put((item_id, "エラー", str(e)))
+                # item_idがNoneの場合（キュー取得前など）は、特定アイテムのエラーとして通知できない
         print("ワーカースレッドを終了します。")
 
     def _perform_single_resample_logic(self, filepath, original_sr, target_sr, output_dir, filename):
@@ -367,7 +446,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
             # original_sr は引数で渡されるようになったので、sf.infoの再呼び出しは不要
             if original_sr == target_sr:
                 msg = f"スキップ: {filename} (既に目標サンプリング周波数です)"
-                print(msg)
+                # print(msg) # ログ出力は呼び出し元や専用ロガーで行う方が良い場合もある
                 return "処理済", msg
 
             y, sr_librosa_original = librosa.load(filepath, sr=None) # 元のSRでロード
@@ -375,15 +454,26 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
             base, ext = os.path.splitext(filename)
             output_filename = f"{base}_resampled_{target_sr}Hz{ext}"
             output_path = os.path.join(output_dir, output_filename)
+            
+            # 出力先ディレクトリが存在しない場合は作成
+            if not os.path.exists(output_dir):
+                try:
+                    os.makedirs(output_dir)
+                    print(f"作成された出力ディレクトリ: {output_dir}")
+                except OSError as ose:
+                    # ディレクトリ作成失敗時のエラーハンドリング
+                    error_msg = f"エラー: 出力ディレクトリの作成に失敗しました ({output_dir}) - {ose}"
+                    print(error_msg)
+                    return "エラー", error_msg # ディレクトリ作成失敗もエラーとして返す
+
             sf.write(output_path, y_resampled, target_sr, subtype='PCM_16')
             success_msg = f"変換成功: {output_filename}"
-            print(success_msg)
+            # print(success_msg)
             return "処理済", success_msg
         except Exception as e:
             error_msg = f"エラー: {filename} の変換に失敗 - {e}"
             print(error_msg)
             return "エラー", str(e) # エラーメッセージ全体を返す
-
     def process_resample_results(self):
         """結果キューをポーリングし、GUIを更新する。"""
         try:
@@ -393,7 +483,10 @@ class AudioResamplerApp(TkinterDnD.Tk): # DND機能のためにTkinterDnD.Tkを�
                     self.tree.set(item_id, column="status", value=status)
                     # ステータスバーにはファイル名と結果を表示
                     filename_in_tree = self.tree.item(item_id, "values")[0]
-                    self.status_var.set(f"{filename_in_tree}: {status} {(' - ' + message) if message else ''}")
+                    if status == "処理中...":
+                        self.status_var.set(f"{filename_in_tree}: 処理中...")
+                    else:
+                        self.status_var.set(f"{filename_in_tree}: {status} {(' - ' + message) if message else ''}")
                 self.resample_results_queue.task_done()
         finally:
             if not self.is_shutting_down:
