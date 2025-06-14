@@ -84,7 +84,10 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 2.  メインウィンドウが表示されます。
 
 #### Pythonスクリプト (`WavResamples.py`) を使用する場合
-1.  お使いのシステムに Python (3.8以上推奨) がインストールされていることを確認してください。
+1.  お使いのシステムに Python (3.8以上推奨) がインストールされていることを確認してください。ターミナルまたはコマンドプロンプトで以下のコマンドを実行して確認してください。
+    ```bash
+    python -V
+    ```
 2.  必要なライブラリ (`tkinterdnd2`, `librosa`, `soundfile`) をインストールします。ターミナルまたはコマンドプロンプトで以下のコマンドを実行してください:
     ```bash
     pip install tkinterdnd2 librosa soundfile
