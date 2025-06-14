@@ -182,9 +182,11 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
     <p align="center">
       <!-- (例：個別変換ボタンを押す前のファイル選択状態のスクリーンショットなど) -->
-      <!-- <img src="images/individual_conversion_selection.png" alt="個別変換のファイル選択"> -->
+      <img src="images/individual_conversion_selection.png" alt="個別変換のファイル選択"><br>
+      (例：個別変換ボタンを押す前のファイル選択状態)
       <!-- (例：個別変換完了後のリスト状態のスクリーンショットなど) -->
-      <!-- <img src="images/individual_conversion_complete.png" alt="個別変換完了"> -->
+      <img src="images/individual_conversion_complete.png" alt="個別変換完了"><br>
+      (例：例：個別変換完了後のリスト状態と個別変換完了のメッセージボックス)
     </p>
 
 ---
