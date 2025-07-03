@@ -7,6 +7,11 @@
 このツールは、複数のWAVファイルのサンプリング周波数を一括で、または自動で変更することができるデスクトップアプリケーションです。Windowsユーザー向けには実行ファイル (`.exe`) を、Python環境をお持ちのユーザー向けにはPythonスクリプト (`.py`) を提供します。
 
 <p align="center">
+  <img src="images/tool_icon.png" alt="ツールのスクリーンショット" width="25%"><br>
+  (Winodws用の WavResampler.exe ファイルのアイコン)
+</p>
+
+<p align="center">
   <img src="images/tool_screenshot.png" alt="ツールのスクリーンショット">
 </p>
 
@@ -79,7 +84,10 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 2.  メインウィンドウが表示されます。
 
 #### Pythonスクリプト (`WavResamples.py`) を使用する場合
-1.  お使いのシステムに Python (3.8以上推奨) がインストールされていることを確認してください。
+1.  お使いのシステムに Python (3.8以上推奨) がインストールされていることを確認してください。ターミナルまたはコマンドプロンプトで以下のコマンドを実行して確認してください。
+    ```bash
+    python -V
+    ```
 2.  必要なライブラリ (`tkinterdnd2`, `librosa`, `soundfile`) をインストールします。ターミナルまたはコマンドプロンプトで以下のコマンドを実行してください:
     ```bash
     pip install tkinterdnd2 librosa soundfile
@@ -135,7 +143,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
     <p align="center">
       <img src="images/save_dialog.png" alt="保存先選択ダイアログ"><br>
-      *(例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)*
+      (例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)
     </p>
 
 4.  変換処理が開始されます。各ファイルの処理状況はリストの「状態」列とウィンドウ下部のステータスバーに表示されます。
@@ -144,7 +152,10 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
     <p align="center">
       <img src="images/batch_complete.png" alt="一括変換完了">
     </p>
-    *(ここに一括変換が完了し、リストの状態が更新されたスクリーンショットを挿入してください。上記はサンプルパスです。)*
+    <p align="center">
+      <img src="images/auto_resampling.png" alt="一括変換完了後リスト">
+    </p>
+
 #### 4.2. 自動変換モード
 
 1.  「自動で変更する」チェックボックスを **オン** にします。
@@ -178,13 +189,15 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 5.  選択されたファイルの変換処理が開始されます。各ファイルの処理状況はリストの「状態」列とウィンドウ下部のステータスバーに表示されます。
 6.  処理が完了すると、リストの「状態」が更新され、場合によってはメッセージボックスで結果が通知されます。
 
-    *(ここに個別変換の操作や結果を示すスクリーンショットを挿入できると理想的です。)*
-
     <p align="center">
       <!-- (例：個別変換ボタンを押す前のファイル選択状態のスクリーンショットなど) -->
-      <!-- <img src="images/individual_conversion_selection.png" alt="個別変換のファイル選択"> -->
+      <img src="images/individual_conversion_selection.png" alt="個別変換のファイル選択"><br>
+      (例：個別変換ボタンを押す前のファイル選択状態)
+    </p>
+    <p align="center">
       <!-- (例：個別変換完了後のリスト状態のスクリーンショットなど) -->
-      <!-- <img src="images/individual_conversion_complete.png" alt="個別変換完了"> -->
+      <img src="images/individual_conversion_complete.png" alt="個別変換完了"><br>
+      (例：例：個別変換完了後のリスト状態と個別変換完了のメッセージボックス)
     </p>
 
 ---
@@ -198,11 +211,11 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
     <p align="center">
       <img src="images/delete_selected.png" alt="選択消去"><br>
-      **(例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)**<br>
+      (例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)<br>
     </p>
     <p align="center">
       <img src="images/delete_selected_after.png" alt="選択消去"><br>
-      **(例：sample_003.wavがリストから消去された後)**<br>
+      (例：sample_003.wavがリストから消去された後)<br>
     </p>
 
 ---
