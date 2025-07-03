@@ -262,6 +262,9 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 
 *   **選択消去**:
     1.  リスト内の消去したいアイテムをクリックして選択します（複数選択可: Ctrl+クリック、Shift+クリック）。
+    <p align="center">
+      <img src="images/select_resampling_files.gif" alt="個別変換ファイル選択GIF">
+    </p>
     2.  「選択消去」ボタンが有効になるので、クリックします。
     3.  選択されたアイテムがリストから削除されます。
     <p align="center">
