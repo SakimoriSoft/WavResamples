@@ -138,8 +138,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 1.  「目標サンプリング周波数」のプルダウンを開いて、変換したい周波数を選択します。
 
     <p align="center">
-      <img src="images/sr_setting_hz.gif" alt="サンプリング周波数設定GIF">
-      <img src="images/sr_setting_hz.png" alt="サンプリング周波数設定">
+      <img src="images/sr_setting_hz.gif" alt="サンプリング周波数設定">
     </p>
 
 ---
