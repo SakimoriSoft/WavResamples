@@ -114,7 +114,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
     （通常（ライトモード）時）
   </p>
   <p align="center">
-    <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%"><br>
+    <img src="images/tool_screenshot_darkmode.png" alt="メインウィンドウ" width="70%"><br>
     （ダークモード時）
   </p>
 
