@@ -110,11 +110,11 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
   > [!NOTE]
   > 以下、メインウィンドウ表示後の操作方法は共通です
   <p align="center">
-    <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%">
+    <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%"><br>
     （通常（ライトモード）時）
   </p>
   <p align="center">
-    <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%">
+    <img src="images/tool_screenshot.png" alt="メインウィンドウ" width="70%"><br>
     （ダークモード時）
   </p>
 
