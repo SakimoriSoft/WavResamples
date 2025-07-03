@@ -135,12 +135,11 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 ---
 ### 3. 目標サンプリング周波数の設定
 
-1.  「目標サンプリング周波数」の入力欄に、変換したい周波数の数値を入力します（例: `48000`、`22.05`など）。
-2.  入力欄の右隣にあるドロップダウンリストから、入力した数値の単位（`Hz` または `kHz`）を選択します。
+1.  「目標サンプリング周波数」のプルダウンを開いて、変換したい周波数を選択します。
 
     <p align="center">
+      <img src="images/sr_setting_hz.gif" alt="サンプリング周波数設定GIF">
       <img src="images/sr_setting_hz.png" alt="サンプリング周波数設定">
-      <img src="images/sr_setting_khz.png" alt="サンプリング周波数設定">
     </p>
 
 ---
