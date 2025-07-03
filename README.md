@@ -223,6 +223,9 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
       <img src="images/select_resampling_files.gif" alt="個別変換ファイル選択GIF">
     </p>
 3.  メインウィンドウのコントロールパネルにある「選択ファイル変換」ボタンをクリックします。
+    <p align="center">
+      <img src="images/select_resampling_button.png" alt="個別変換実行ボタン">
+    </p>
 4.  出力先フォルダの指定:
     *   「ソース元に保存」チェックボックスが **オフ** の場合:
         「変換後のファイルの保存先フォルダを選択してください」というダイアログが表示されます。変換されたファイルを保存するフォルダを選択し、「フォルダーの選択」をクリックします。
@@ -253,12 +256,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
     3.  選択されたアイテムがリストから削除されます。
 
     <p align="center">
-      <img src="images/delete_selected.png" alt="選択消去"><br>
-      (例：ここでは、sample_003.wavを選択して選択消去ボタンを押そうとしている)<br>
-    </p>
-    <p align="center">
-      <img src="images/delete_selected_after.png" alt="選択消去"><br>
-      (例：sample_003.wavがリストから消去された後)<br>
+      <img src="images/delete_selected.gif" alt="選択消去"><br>
     </p>
 
 ---
