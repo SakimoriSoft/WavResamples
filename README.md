@@ -170,7 +170,7 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
       <img src="images/batch_complete.png" alt="一括変換完了">
     </p>
     <p align="center">
-      <img src="images/auto_resampling.png" alt="一括変換完了後リスト">
+      <img src="images/batch_resampling_list.png" alt="一括変換完了後リスト">
     </p>
 
 #### 5.2. 自動変換モード
