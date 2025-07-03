@@ -156,7 +156,10 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
     *   **出力先フォルダ記憶**: このとき選択したフォルダは記憶され、次回「一括変換実行」ボタンクリック時にデフォルトの保存先として提案されます。
 
     <p align="center">
-      <img src="images/save_dialog.png" alt="保存先選択ダイアログ"><br>
+      <img src="images/save_dialog.png" alt="保存先選択ダイアログ" width="60%">
+    </p>
+
+4.><br>
       (例：ここでは、ピクチャフォルダに作成した返還後フォルダを選択している)
     </p>
 
@@ -173,16 +176,21 @@ Windowsで実行ファイル (`WavResampler.exe`) を使用する場合、エン
 #### 5.2. 自動変換モード
 
 1.  「自動で変更する」チェックボックスを **オン** にします。
-  <p align="center">
-    <img src="images/auto_resampling.gif" alt="自動で変更するチェックボックスGIF">
-  </p>
+    <p align="center">
+      <img src="images/auto_resampling.gif" alt="自動で変更するチェックボックスGIF">
+    </p>
 2.  初めて自動変換モードをONにした場合、または出力先が未設定の場合は、「自動変換ファイルの保存先フォルダを選択」ダイアログが表示されます。自動変換されたファイルを保存するフォルダを選択します。
+    <p align="center">
+      <img src="images/save_dialog.png" alt="保存先選択ダイアログ" width="60%">
+    </p>
     *   この出力先は、自動変換モードがONの間、記憶されます。
     *   **出力先フォルダ記憶**: また、この出力先は次回アプリケーション起動時や、再度自動変換モードをONにした際にも自動的に設定されます。
 3.  目標サンプリング周波数を設定します。(既に設定済みの場合はその設定が使用されます)
 4.  この状態でWAVファイルをリストにドラッグ＆ドロップすると、ファイルが追加されると同時に「状態」が「キュー済」となり、バックグラウンドで自動的に変換処理が開始されます。
+    <p align="center">
+      <img src="images/auto_resampling_queue.gif" alt="自動変換中GIF">
+    </p>  
 5.  処理が完了すると、リストの「状態」列が「処理済」または「エラー」に更新され、ステータスバーにも結果が表示されます。
-
     <p align="center">
       <img src="images/auto_resampling.png" alt="自動変換中">
     </p>
