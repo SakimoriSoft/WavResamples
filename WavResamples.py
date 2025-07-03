@@ -31,7 +31,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # ドラッグ＆ドロップ機能の�
         # --- テーマ設定 ---
         self.style = ttk.Style(self)
         self.style.theme_use('clam') # カスタマイズしやすいテーマを選択
-        self.dark_mode_var = tk.BooleanVar(value=True) # デフォルトはダークモード
+        self.dark_mode_var = tk.BooleanVar(value=False) # デフォルトはライトモード
 
         # ウィンドウサイズ
         window_width = 1280
@@ -67,7 +67,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # ドラッグ＆ドロップ機能の�
         self._process_timer_id = None # 結果ポーリング用のタイマーID
 
         self._setup_ui() # UIのセットアップ
-        self._apply_theme() # 初期テーマを適用
+        # self._apply_theme() # 初期テーマは _setup_ui の最後で after を使って適用する
 
 
     # UI要素のセットアップを行うメソッド
@@ -180,6 +180,7 @@ class AudioResamplerApp(TkinterDnD.Tk): # ドラッグ＆ドロップ機能の�
         # self.update_status_and_button_states() # 初期状態は「準備完了」メッセージのままにするため、ここでは呼ばない
         self._process_timer_id = self.after(100, self.process_resample_results) # 変換結果キューのポーリングを開始
         self.protocol("WM_DELETE_WINDOW", self.on_closing) # ウィンドウを閉じる際の処理を登録
+        self.after(1, self._apply_theme) # メインループ開始直後に初期テーマを適用する
 
     def _toggle_theme(self):
         """テーマを切り替えてUIに適用します。"""
