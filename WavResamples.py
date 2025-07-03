@@ -5,7 +5,6 @@ import soundfile as sf
 import os
 import threading
 import queue
-import shutil
 import numpy as np
 
 # tkinterdnd2 が利用可能か最初に確認します
